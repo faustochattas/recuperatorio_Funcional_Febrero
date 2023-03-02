@@ -1,7 +1,8 @@
 data Usuario = Usuario{
     nombre :: Nombre,
     seguidos :: [Nombre]
-}
+    } deriving Show
+
 type Nombre = String
 
 marsupial,churrasco,tito,pipi :: Usuario
@@ -40,28 +41,32 @@ sigueA :: Usuario -> Usuario -> Bool
 sigueA usuario1 usuario2 = nombre usuario2 `elem` seguidos usuario1
 
 --- punto 3 ---
---- CORREJIR ESTO
 
----seguidores :: Usuario -> [Usuario] -> [Usuario]
----seguidores usuario variosUsuarios = cumplaFuncion variosUsuarios usuario
+seguidores::Usuario->[Usuario]->[Nombre]
+seguidores u (x:xs) | elem (nombre u) (seguidos x) = (nombre x):seguidores u xs
+                    | otherwise = seguidores u xs
+seguidores u [ ] = [ ]
 
---- cumplaFuncion :: [Usuario] -> Usuario -> [Usuario]
----cumplaFuncion variosUsuarios usuario = filter (sigueA variosUsuarios usuario) variosUsuarios
-
-
-
---- CORREJIR ESTO
+--- CAMBIAR LA X POR LA U
 
 --- punto 4 ---
 
-agregarUnFav :: Mensaje -> Mensaje
+type Accion = Mensaje -> Mensaje
+
+agregarUnFav :: Accion
 agregarUnFav mensaje = mensaje{favs = favs mensaje + 1}
 
-editar :: String -> Mensaje -> Mensaje
+editar :: String -> Accion
 editar palabras mensaje = mensaje{texto = palabras ++ texto mensaje}
 
-repipear :: Usuario -> Mensaje -> Mensaje
+repipear :: Usuario -> Accion
 repipear repipeador mensaje = mensaje{usuario = nombre repipeador, texto = usuario mensaje ++ ": " ++ texto mensaje, favs = 0}
 
 --- punto 5 ---
 
+queAccionTomar :: Mensaje -> Accion -> Accion -> Mensaje
+queAccionTomar mensaje accion1 accion2
+                                        | valoracion(accion1 mensaje) > valoracion(accion2 mensaje) = accion1 mensaje
+                                        | valoracion(accion2 mensaje) > valoracion(accion1 mensaje) = accion2 mensaje
+                                        | otherwise = accion1 mensaje
+                                        
